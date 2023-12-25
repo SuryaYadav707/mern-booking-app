@@ -11,6 +11,8 @@ import Register from "./pages/Register";
 import SignIn from "./pages/Signin";
 import AddHotel from "./pages/AddHotel";
 import { useAppContext } from "./contexts/AppContext";
+import MyHotels from "./pages/MyHotels";
+import EditHotel from "./pages/EditHotel";
 
 const App = () => {
   
@@ -54,6 +56,24 @@ const App = () => {
           element={
             <Layout>
             <AddHotel/>
+          </Layout>
+          }> 
+          </Route>
+
+          <Route 
+          path='/edit-hotel/:hotelId'
+          element={
+            <Layout>
+            <EditHotel/>
+          </Layout>
+          }> 
+          </Route>
+
+          <Route 
+          path='/my-hotels'
+          element={
+            <Layout>
+            <MyHotels/>
           </Layout>
           }> 
           </Route>

@@ -1,22 +1,7 @@
 import mongoose from "mongoose";
 import { deflate } from "zlib";
+import { HotelType } from "../shared/types";
 
-export type HotelType = {
-    _id: string;
-    userId: string;
-    name: string;
-    city: string;
-    country: string;
-    description: string;
-    type : string;
-    adultCount : number;
-    childCount : number ;
-    facilites : string[];
-    pricePerNight: number;
-    starRating: number;
-    imageUrls : string[];
-    lastUpdated : Date;
-}
 
 const hotelSchema = new mongoose.Schema({
     userId: { 
