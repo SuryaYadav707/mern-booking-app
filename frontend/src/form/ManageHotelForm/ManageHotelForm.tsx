@@ -25,7 +25,7 @@ export type HotelFormData = {
 }
 
 type Props ={
-  hotel?:HotelType 
+  hotel?:HotelType[] | HotelType
   onSave: (hotelFormData:FormData)=> void
   isLoading:boolean
 }
@@ -36,16 +36,26 @@ const ManageHotelForm =({onSave,isLoading,hotel}:Props) =>{
     const { handleSubmit,reset }= formMethods;
     
     useEffect(()=>{
-      reset(hotel);
+      if (hotel && !Array.isArray(hotel)) {
+        reset(hotel);
+      }
+      // else {
+      //   // Handle single hotel
+      //   reset(hotel);
+      // }
     },[hotel,reset])
 
     const onSubmit =handleSubmit((formDataJson: HotelFormData)=>{
        
       const formData = new FormData();
 
-      if(hotel){
-            formData.append("hotelId",hotel._id)
+      if (hotel) {
+        if (!Array.isArray(hotel)) {
+          // Handle single hotel
+          formData.append("hotelId", hotel._id);
+        }
       }
+
       formData.append("name",formDataJson.name);
       formData.append("city",formDataJson.city);
       formData.append("country",formDataJson.country);
