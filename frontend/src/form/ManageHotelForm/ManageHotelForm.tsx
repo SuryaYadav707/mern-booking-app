@@ -94,6 +94,12 @@ const ManageHotelForm =({onSave,isLoading,hotel}:Props) =>{
         transition={{ duration: 0.5 }}
         className="card p-6 rounded-md shadow-md bg-white"
         whileHover={{ scale: 1.02 }}
+        style={{
+          // maxWidth: '600px',
+          // margin: '0 auto',
+          // borderRadius: '15px',
+          boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.1)', // Add a subtle box shadow
+        }}
       >
       <form className="flex flex-col gap-10" onSubmit={onSubmit}>
         <DetailsSection/>
