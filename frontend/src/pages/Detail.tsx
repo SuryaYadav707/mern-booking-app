@@ -2,7 +2,7 @@ import { useQuery } from "react-query";
 import { useParams } from "react-router-dom";
 import * as apiClient from "./../api-client";
 import { AiFillStar } from "react-icons/ai";
-import GuestInfoForm from "../form/ManageHotelForm/GuestInfoForm/GuestInfoForm";
+import GuestInfoForm from "../form/GuestInfoForm/GuestInfoForm";
 
 const Detail = () => {
   const { hotelId } = useParams();
