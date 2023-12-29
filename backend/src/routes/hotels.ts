@@ -1,8 +1,13 @@
-import { error } from 'console';
+import { error, log } from 'console';
 import express,{Request,Response} from 'express'
 import Hotel from '../models/hotel';
-import { HotelSearchResponse } from '../shared/types';
+import { BookingType, HotelSearchResponse } from '../shared/types';
 import { param, validationResult } from 'express-validator';
+import Stripe from 'stripe'
+import verifyToken from '../middleware/auth';
+
+const stripe = new Stripe(process.env.STRIPE_API_KEY as string)
+
 
 const router = express.Router()
 
@@ -78,10 +83,127 @@ router.get(
 
 })
 
+router.post(
+  "/:hotelId/bookings/payment-intent",
+  verifyToken,
+  async (req:Request,res:Response) => {
+     // 1.total cost
+     // 2. hotelId
+     // 3. userId
+
+     const { numberOfNights} = req.body
+     const hotelId=req.params.hotelId
+
+     const hotel = await Hotel.findById(hotelId)
+      if(!hotel){
+        return res.status(400).json({message:"Hotel not found"})
+      }
+      const totalCost = hotel.pricePerNight * numberOfNights
+      const paymentIntent = await stripe.paymentIntents.create({
+        amount:totalCost,
+        currency:"INR",
+        description:"hotel booking",
+        shipping: {
+          name: `NAME`,
+          address: {
+            line1: 'Address Line 1',
+            line2: 'Address Line 2',
+            city: 'Austin',
+            postal_code: '75106',
+            state: 'Texas',
+            country: 'United States',
+            
+          }},
+        metadata:{
+          hotelId,
+          userId:req.userId
+        }
+      })
+      console.log(paymentIntent);
+      
+      if (!paymentIntent.client_secret){
+         return res.status(500).json({message:"Error creating payment intent"})
+      }
+      const response={
+        paymentIntentId:paymentIntent.id,
+        clientSecret:paymentIntent.client_secret.toString(),
+        totalCost
+      }
+
+      res.send(response)
+  }
+)
 
 
+router.post(
+  "/:hotelId/bookings",
+  verifyToken,
+  async (req:Request,res:Response) => {
+     try {
+      const paymentIntentId=req.body.paymentIntentId
+      const paymentIntent=await stripe.paymentIntents.retrieve(
+        paymentIntentId as string
+        
+      )
 
+      
+    
+      
+      if(!paymentIntent)
+      {
+        return res.status(400).json({message:"payment intent not found"})
+      }
 
+      if(
+        paymentIntent.metadata.hotelId !==req.params.hotelId || 
+        paymentIntent.metadata.userId !== req.userId
+        ){ 
+          return res.status(400).json({message:"payment intent mismatch"})
+        }
+
+      if(paymentIntent.status !== "succeeded") {
+        return res.status(400).json({message:`payment intent not succeeded. Status ${paymentIntent.status}`})
+
+      } 
+      
+       // Check if payment method is attached to the payment intent
+       if (!paymentIntent.payment_method) {
+        return res.status(400).json({
+          message: "Payment method is required for this payment intent",
+        });
+      }
+      
+
+      const newBooking : BookingType = {
+        ...req.body,
+        userId:req.userId,
+        
+      }
+      console.log(newBooking)
+      const hotel = await Hotel.findOneAndUpdate(
+        {_id: req.params.hotelId},
+        {
+          $push:{bookings:newBooking}
+        }
+        
+      )
+
+      if(!hotel){
+        res.status(400).json({message:"No hotel found"})  
+
+      }
+
+      await hotel?.save()
+      console.log(hotel)
+      res.status(200).send()
+
+     } catch (error) {
+            console.error("Error:", error); // Log the error to console
+
+      res.status(500).json({message:"Something went error"})  
+
+     }
+  })
 
 const constructSearchQuery = (queryParams: any) => {
     let constructedQuery: any = {};

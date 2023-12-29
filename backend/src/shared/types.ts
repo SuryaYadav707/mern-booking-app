@@ -1,3 +1,14 @@
+export type UserType={
+    _id:string;
+    email:string;
+    password:string;
+    firstName:string;
+    lastName:string;
+};
+
+
+
+
 export type HotelType = {
     _id: string;
     userId: string;
@@ -13,9 +24,21 @@ export type HotelType = {
     starRating: number;
     imageUrls : string[];
     lastUpdated : Date;
+    bookings:BookingType[];
 }
 
-
+export type BookingType ={
+    _id: string;
+    userId: string;
+    firstName:string;
+    lastName:string;
+    email:string;
+    checkIn:Date;
+    checkOut:Date;
+    adultCount:number;
+    childCount:number;
+    totalCost:number;
+}
 export type HotelSearchResponse ={
     data : HotelType[];
     pagination:{
@@ -23,4 +46,11 @@ export type HotelSearchResponse ={
         page:number ;
         pages:number
     }
+}
+
+export type paymentIntentResponse ={
+    paymentIntentId:string;
+    clientSecret:string;
+    totalCost:number
+
 }

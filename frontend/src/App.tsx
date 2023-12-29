@@ -15,6 +15,7 @@ import MyHotels from "./pages/MyHotels";
 import EditHotel from "./pages/EditHotel";
 import Search from "./pages/Search";
 import Detail from "./pages/Detail";
+import Booking from "./pages/Booking";
 
 const App = () => {
   
@@ -60,8 +61,20 @@ const App = () => {
         
         { isLoggedIn && (
           <>
+
           <Route 
-          path='/add-hotel'
+          path='/hotels/:hotelId/bookings'
+          element={
+            <Layout>
+            <Booking/>
+          </Layout>
+          }> 
+          </Route>
+
+
+
+          <Route 
+          path='/add-hotels'
           element={
             <Layout>
             <AddHotel/>
@@ -70,7 +83,7 @@ const App = () => {
           </Route>
 
           <Route 
-          path='/edit-hotel/:hotelId'
+          path='/edit-hotels/:hotelId'
           element={
             <Layout>
             <EditHotel/>

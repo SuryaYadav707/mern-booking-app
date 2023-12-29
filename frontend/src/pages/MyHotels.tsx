@@ -23,7 +23,7 @@ const MyHotels = () =>{
             <h1 className="text-3xl font-bold">
                 My Hotels
             </h1>
-            <Link to="/add-hotel" className="flex bg-blue-600 text-white text-xl font-bold p-2 hover:bg-blue-500">
+            <Link to="/add-hotels" className="flex bg-blue-600 text-white text-xl font-bold p-2 hover:bg-blue-500">
                 Add Hotel
             </Link>
           </span>
@@ -70,7 +70,7 @@ const MyHotels = () =>{
                     </div>
                  </div>
                  <span className="flex justify-end py-3">
-                        <Link to={`/edit-hotel/${hotel._id}`} className="flex bg-blue-600 text-white text-xl font-bold p-2 hover:bg-blue-500">
+                        <Link to={`/edit-hotels/${hotel._id}`} className="flex bg-blue-600 text-white text-xl font-bold p-2 hover:bg-blue-500">
                             View Details
                         </Link>
                         <button></button>
