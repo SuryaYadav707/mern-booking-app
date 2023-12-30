@@ -60,6 +60,21 @@ try
     } 
 })
 
+
+
+router.get("/",async (req:Request,res:Response) => {
+  
+  try {
+    const hotels=await Hotel.find().sort("-lastUpdated")
+    res.json(hotels)
+  } catch (error) {
+    console.log("error",error);
+    
+  }
+
+})
+
+
 // /api/hotels/6553282636
 router.get(
   '/:id',
